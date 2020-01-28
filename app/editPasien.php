@@ -1,0 +1,106 @@
+<?php 
+session_start();
+
+
+
+ ?>
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+
+<h2 class="text-center">Halaman Edit Pasien</h2>
+ <?php 
+
+$idPasien = $_GET['idPasien'];
+$conn = mysqli_connect("localhost", "root", "", "uas_klinik");
+$sql = "SELECT * FROM tbl_pasien WHERE idpasien = '".$idPasien."'";
+
+// $sql = "SELECT * FROM tbl_pendaftaran;";
+// $sql .= "SELECT * FROM tbl_pasien";
+$query = mysqli_query($conn, $sql);
+
+// $d = mysqli_fetch_assoc($query);
+// var_dump($d);
+while($c = mysqli_fetch_assoc($query)) :
+    
+  ?>
+
+
+<form method="post" action="" enctype="multipart/form-data">
+  
+<div class="form-row">
+<div class="form-group col-md-4">
+      <label for="inputEmail4">ID Pasien</label>
+    </div>
+    <div class="form-group col-md-8">
+      <input type="text" class="form-control" id="inputEmail4" name="idPasien" value="<?= $c['idpasien'];?>" disabled>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputEmail4">Nama Pasien</label>
+    </div>
+    <div class="form-group col-md-8">
+      <input type="text" class="form-control" id="inputEmail4" name="namaPasien" value="<?= $c['namapasien'];?>">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputEmail4">Kontak</label>
+    </div>
+    <div class="form-group col-md-8">
+      <input type="text" class="form-control" id="inputEmail4" name="kontak" value="<?= $c['kontak'];?>">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputEmail4">Alamat</label>
+    </div>
+    <div class="form-group col-md-8">
+      <input type="text" class="form-control" id="inputEmail4" name="alamat" value="<?= $c['alamat'];?>">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputEmail4">Foto</label>
+    </div>
+    <div class="form-group col-md-8">
+      <input type="file" class="form-control" id="inputEmail4" name="foto" value="<?= $c['foto'];?>">
+    </div>
+    <div class="form-group col-md-12">
+      <img src="../img/fotopasien/<?= $c['foto'];?>" width="80px" heigth="80px">
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary" name="submitt">Simpan</button>
+  <button type="submit" class="btn btn-primary">Batal</button>
+</form>
+<?php endwhile; ?>
+
+<?php 
+
+if (isset($_POST['submitt'])) {
+  // if ($_POST['submitt']) {
+    $conn = mysqli_connect("localhost", "root", "", "uas_klinik");
+    $NamaPasien = htmlspecialchars(strip_tags($_POST['namaPasien']));
+    $Kontak = htmlspecialchars(strip_tags($_POST['kontak']));
+    $Alamat = htmlspecialchars(strip_tags($_POST['alamat']));
+    $Foto = upload();
+
+  
+
+
+
+    $sql = "UPDATE tbl_pasien SET namapasien ='".$NamaPasien."', kontak='".$Kontak."', alamat='".$Alamat."', foto='".$Foto."' WHERE idpasien='".$idPasien."'";
+
+    $query = mysqli_query($conn, $sql);
+
+   var_dump($query);
+
+    if (mysqli_affected_rows($conn) > 0) {
+    echo "<script>alert('Data berhasil diubah'); document.location.href = 'index.php?tampil=dataPasien';</script>";
+    } else{
+    echo "<script>alert('Data gagal diubah'); document.location.href = 'editPasien.php';</script>";
+    }
+
+  }
+  function upload(){
+  $namaFile = $_FILES['foto']['name'];
+  $TmpName = $_FILES['foto']['tmp_name'];
+
+  move_uploaded_file($TmpName, '../img/fotopasien/' . $namaFile);
+
+  return $namaFile;
+
+}
+?>

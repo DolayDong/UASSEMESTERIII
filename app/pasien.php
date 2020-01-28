@@ -1,0 +1,66 @@
+
+
+
+<table>
+  <tr>
+    <td colspan="7">
+      <form class="form-inline my-2 my-lg-0" method="post" action="">
+        <input class="form-control mr-sm-2" type="search" placeholder="Masukkan keyword.." aria-label="Cari" name="keyword">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="cari">Cari</button>
+      </form>
+    </td>
+  </tr>
+</table>
+ <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">id pasien</th>
+            <th scope="col">nama pasien</th>
+            <th scope="col">kontak</th>
+            <th scope="col">alamat</th>
+            <th scope="col">foto</th>
+            <th scope="col">aksi</th>
+
+
+          </tr>
+        </thead>
+        <tbody>
+
+ <?php 
+
+
+$conn = mysqli_connect("localhost", "root", "", "uas_klinik");
+$sql = "SELECT * FROM tbl_pasien ORDER BY namapasien ASC";
+$query = mysqli_query($conn, $sql);
+if (isset($_POST['cari'])) {
+  $keyword = $_POST['keyword'];  
+
+$sql = "SELECT * FROM tbl_pasien WHERE namapasien LIKE '%$keyword%'";
+  
+  
+$query = mysqli_query($conn, $sql);
+
+
+}
+
+while($c = mysqli_fetch_assoc($query)) :
+  ?>
+          
+          <tr>
+            <th scope="row"><?php echo $c['idpasien']; ?></th>
+            <td><?php echo $c['namapasien']; ?></td>
+            <td><?php echo $c['kontak']; ?></td>
+            <td><?php echo $c['alamat']; ?></td>
+            <td><img src="../img/fotopasien/<?php echo $c['foto']; ?>" width="80px" heigth="80px"></td>
+            <td> 
+              <a href="editPasien.php?idPasien=<?= $c['idpasien']; ?>"><button  type="button" class="btn btn-warning" >Edit</button></a>
+      
+              <a href="hapus.php?idPasien=<?= $c['idpasien']; ?>"><button type="button" class="btn btn-danger" onclick="return confirm('hapus...??');" >Hapus</button></a>
+              
+              
+            </td>
+          </tr>
+        <?php endwhile;  ?>
+          
+        </tbody>
+      </table>
